@@ -37,7 +37,7 @@ abstract class TemplateView {
 
 		$html = <<< HTML
 		<!DOCTYPE html>
-		<html lang='en'>
+		<html lang='en' style='position: relative; min-height: 100%;'>
 		<head>
 			<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 			<meta http-equiv="Content-Language" content="en-gb" />
@@ -61,6 +61,7 @@ abstract class TemplateView {
 
 	private function addPageFooter() {
 		$this->html_output .= <<< HTML
+		</body>
 		</html>
 		HTML;
 	}

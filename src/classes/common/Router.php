@@ -29,7 +29,9 @@ class Router {
 	public function setRouteName(): string {
 		if (isset($_POST['route'])) {
 			$route = $_POST['route'];
-		} else {
+		} else if (isset($_GET['route'])) {
+			$route = $_GET['route'];
+		} else  {
 			$route = 'index';
 		}
 
@@ -52,7 +54,22 @@ class Router {
 				$controller = Creator::createObject('UserLoginProcessController');
 				break;
 			case 'user_logout':
-				$controller = Creator::createObject('UserLogoutProcessController');
+				$controller = Creator::createObject('UserLogoutController');
+				break;
+			case 'register':
+				$controller = Creator::createObject('RegisterInstitutionPageController');
+				break;
+			case 'pricing':
+				$controller = Creator::createObject('PricingController');
+				break;
+			case 'contact':
+				$controller = Creator::createObject('ContactController');
+				break;
+			case 'terms':
+				$controller = Creator::createObject('TermsController');
+				break;
+			case 'register_institution':
+				$controller = Creator::createObject('RegisterInstitutionController');
 				break;
 			default:
 				$controller = Creator::createObject('IndexController');

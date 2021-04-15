@@ -20,7 +20,7 @@ $app_name = 'Online Gradebook for Teachers and Students';
 $img_path = $root_path . 'img/';
 $css_path = $root_path . 'css/';
 $js_path = $root_path . 'js/';
-
+ 
 define('ROOT_PATH', $root_path);
 define('APP_NAME', $app_name);
 define('IMG_PATH', $img_path);
@@ -28,12 +28,12 @@ define('CLASS_PATH', $class_path);
 define('CSS_PATH', $css_path);
 define('JS_PATH', $js_path);
 
-function getDatabaseDetails() {
+function getDatabaseDetails($database_name) {
 	$rdbms = 'mysql';
 	$host = 'localhost';
 	$port = '3306';
 	$charset = 'utf8mb4';
-	$db_name = 'db_gradebook';
+	$db_name = $database_name;
 	$pdo_dsn = $rdbms . ':host=' . $host . ';port=' . $port . ';dbname=' . $db_name . ';charset=' . $charset;
 
 	$username = 'gradebookuser';

@@ -67,7 +67,7 @@ class SessionWrapper {
 	}
 
 	public function isLoggedIn() {
-		if (SessionWrapper::getSession('user_id'))
+		if (SessionWrapper::getSession('username'))
 			return true;
 		else
 			return false;

@@ -1,0 +1,68 @@
+body {
+	background-color: #c5ccd6 !important;
+}
+
+#mainmenu {
+	left: 0;
+	background-color: #4287f5;
+	position: fixed;
+	width: 250px;
+	padding-top: 57px;
+}
+
+#mainmenu a {
+	display: block;
+	text-decoration: none;
+	color: white;
+	padding: 12px 8px 12px 16px;
+	background-color: #4287f5;
+}
+
+#mainmenu a:hover {
+	background-color: #5894f5;
+}
+
+.menu-sep {
+	border-top: 1px solid #c5ccd6;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+#container {
+	margin: 10px;
+	margin-left: 260px;
+	padding: 20px;
+	min-height: 500px;
+	background-color: white;
+}
+
+main {
+	padding-top: 57px;
+}
+
+.edit-btn {
+	text-decoration: none;
+	outline: none;
+	border: none;
+	background-color: white;
+	cursor: pointer;
+	color: gray;
+}
+
+.position {
+	float: left;
+	display: block;
+}
+
+.label {
+	float: left;
+	padding-right: 20px;
+}
+
+#dbs {
+	display: none;
+}
+
+#tables {
+	display: none;
+}
