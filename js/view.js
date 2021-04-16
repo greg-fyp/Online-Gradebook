@@ -6,19 +6,35 @@ function switchNav() {
 	}
 }
 
-function expandDatabases() {
-	if (document.getElementById('dbs').style.display != 'block') {
-		document.getElementById('dbs').style.display = 'block';
-	} else {
-		document.getElementById('dbs').style.display = 'none';
-		document.getElementById('tables').style.display = 'none';
-	}
+function showAdmins() {
+	hideAll();
+	document.getElementById('admin').style.display = 'block';
 }
 
-function expandTables() {
-	if (document.getElementById('tables').style.display != 'block') {
-		document.getElementById('tables').style.display = 'block';
-	} else {
-		document.getElementById('tables').style.display = 'none';
-	}
+function showRegs() {
+	hideAll();
+	document.getElementById('r_reqs').style.display = 'block';
+}
+
+function showSups() {
+	hideAll();
+	document.getElementById('s_reqs').style.display = 'block';
+}
+
+function showInstitutions() {
+	hideAll();
+	document.getElementById('institution').style.display = 'block';
+}
+
+function showQuotes() {
+	hideAll();
+	document.getElementById('quotes').style.display = 'block';
+}
+
+function hideAll() {
+	document.getElementById('admin').style.display = 'none';
+	document.getElementById('r_reqs').style.display = 'none';
+	document.getElementById('s_reqs').style.display = 'none';
+	document.getElementById('institution').style.display = 'none';
+	document.getElementById('quotes').style.display = 'none';
 }

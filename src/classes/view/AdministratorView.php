@@ -2,21 +2,18 @@
 
 class AdministratorView extends TemplateView {
 
-	private $admin_details;
-	private $institutions;
+	private $details;
 
 	public function __construct() {
 		parent::__construct();
-		$this->admin_details = [];
-		$this->institutions = [];
+		$this->details = null;
 	}
 
 	public function __destruct() {}
 
 	public function setDetails($details) {
-		$this->admin_details = $details['personal'];
-		$this->institutions = $details['institutions'];
-	}
+		$this->details = $details;
+	} 
 
 	public function create() {
 		$this->page_title = APP_NAME . 'Admin View';
@@ -25,7 +22,12 @@ class AdministratorView extends TemplateView {
 
 	public function addPageContent() {
 		$target_file = ROOT_PATH;
-		$first_name = $this->admin_details->getFirstname();
+		$first_name = $this->details['personal']->getFirstname();
+		$admin_table = $this->buildAdminTable();
+		$institution_table = $this->buildInstitutionTable();
+		$register_table = $this->buildRegisterTable();
+		$support_table = $this->buildSupportTable();
+		$quote_table = $this->buildQuotesTable();
 
 		$this->html_output .= <<< HTML
 		<header>
@@ -48,11 +50,11 @@ class AdministratorView extends TemplateView {
 		<nav class='collapse show col-md-4' id='mainmenu'>
 		<a href='#'><i class='icon-home'></i>  Home</a>
 		<div class='menu-sep'></div>
-		<a href='#'><i class='icon-wrench'></i> Administrators</a>
-		<a href='#'><i class='icon-bank'></i> Institutions</a>
-		<a href='#'><i class='icon-user-plus'></i>  Registration Requests</a>
-		<a href='#'><i class='icon-question-circle-o'></i>  Support Requests</a>
-		<a href='#'><i class='icon-quote-right'></i> Quotes</a>
+		<a href='javascript:showAdmins()'><i class='icon-wrench'></i> Administrators</a>
+		<a href='javascript:showInstitutions()'><i class='icon-bank'></i> Institutions</a>
+		<a href='javascript:showRegs()'><i class='icon-user-plus'></i>  Registration Requests</a>
+		<a href='javascript:showSups()'><i class='icon-question-circle-o'></i>  Support Requests</a>
+		<a href='javascript:showQuotes()'><i class='icon-quote-right'></i> Quotes</a>
 		<a href='#'><i class='icon-database'></i> Databases</a>
 		<div class='menu-sep'></div>
 		<a href='#'><i class='icon-user'></i> My Details</a>
@@ -60,9 +62,106 @@ class AdministratorView extends TemplateView {
 		</nav>
 		<main>
 		<div id='container'>
-			
+			<div id='admin'>
+				$admin_table
+			</div>
+			<div id='institution'>
+				$institution_table
+			</div>
+			<div id='r_reqs'>
+				$register_table
+			</div>
+			<div id='s_reqs'>
+				$support_table
+			</div>
+			<div id='quotes'>
+				$quote_table
+			</div>
 		</div>
 		</main>
 		HTML;
+	}
+
+	private function buildAdminTable() {
+		$obj = Creator::createObject('TableView');
+		$obj->addHead('ID', 'Username', 'Fullname', 'Password', 'Gender', 'DoB', 'Birth Place', 'Added Timestamp', 'Action', 'Action');
+		$button_edit = '<button class="btn btn-success m-1">Edit</button>';
+		$button_delete = '<button class="btn btn-danger m-1">Delete</button>';
+
+		foreach ($this->details['administrators'] as $item) {
+			$obj->addRow($item->getUserId(), $item->getUsername(), $item->getFullname(), $item->getPassword(), $item->getGender(), $item->getDob(), $item->getBirthPlace(), $item->getAddedTimestamp(), $button_edit, $button_delete);
+		}
+
+		return $obj->getHtmlOutput();
+	}
+
+	private function buildInstitutionTable() {
+		$obj = Creator::createObject('TableView');
+		$obj->addHead('ID', 'Name', 'Phone', 'Username', 'Password', 'Address', 'Added Timestamp', 'Database Name', 'Domain', 'Action', 'Action');
+		$button_edit = '<button class="btn btn-success m-1">Edit</button>';
+		$button_delete = '<button class="btn btn-danger m-1">Delete</button>';
+
+		if (empty($this->details['institutions'])) {
+			$obj->addRow('-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-');
+		} else {
+			foreach ($this->details['institutions'] as $item) {
+				$obj->addRow($item->getId(), $item->getName(), $item->getPhone(), $item->getEmail(), $item->getPassword(), $item->getAddress(),
+				$item->getAddedTimestamp(), $item->getDbName(), $item->getDomain(), $button_edit, $button_delete);
+			}	
+		}
+
+		return $obj->getHtmlOutput();
+	}
+
+	private function buildRegisterTable() {
+		$obj = Creator::createObject('TableView');
+		$obj->addHead('ID', 'Content', 'Added Timestamp', 'Action', 'Action');
+		$button_edit = '<button class="btn btn-success m-1">Edit</button>';
+		$button_delete = '<button class="btn btn-danger m-1">Delete</button>';
+
+		if (empty($this->details['register_requests'])) {
+			$obj->addRow('-', '-', '-', '-', '-');
+		} else {
+			foreach ($this->details['register_requests'] as $item) {
+				$obj->addRow($item->getId(), $item->getContent(), $item->getAddedTimestamp(), $button_edit, $button_delete);
+			}	
+		}
+
+		return $obj->getHtmlOutput();
+	}
+
+	private function buildSupportTable() {
+		$obj = Creator::createObject('TableView');
+		$obj->addHead('ID', 'User ID', 'Institution ID', 'Content', 'Added Timestamp', 'Action', 'Action');
+		$button_edit = '<button class="btn btn-success m-1">Edit</button>';
+		$button_delete = '<button class="btn btn-danger m-1">Delete</button>';
+
+		if (empty($this->details['support_requests'])) {
+			$obj->addRow('-', '-', '-', '-', '-', '-', '-');
+		} else {
+			foreach ($this->details['support_requests'] as $item) {
+				$obj->addRow($item->getId(), $item->getUserId(), $item->getInstitutionId(), $item->getContent(), $item->getAddedTimestamp(), 
+					$button_edit, $button_delete);
+			}	
+		}
+
+		return $obj->getHtmlOutput();
+	}
+
+	private function buildQuotesTable() {
+		$obj = Creator::createObject('TableView');
+		$obj->addHead('ID', 'Content', 'Author', 'Action', 'Action');
+		$button_edit = '<button class="btn btn-success m-1">Edit</button>';
+		$button_delete = '<button class="btn btn-danger m-1">Delete</button>';
+
+		if (empty($this->details['quotes'])) {
+			$obj->addRow('-', '-', '-', '-', '-');
+		} else {
+			foreach ($this->details['quotes'] as $item) {
+				$obj->addRow($item->getId(), $item->getContent(), $item->getAuthor(), $button_edit, $button_delete);
+			}	
+		}
+
+		return $obj->getHtmlOutput();
 	}
 }

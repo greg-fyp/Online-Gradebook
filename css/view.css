@@ -66,3 +66,29 @@ main {
 #tables {
 	display: none;
 }
+
+table, th, tr {
+	border: 1px solid lightgray;
+	text-align: center;
+	font-weight: normal;
+}
+
+#admin {
+	display: none;
+}
+
+#r_reqs {
+	display: none;
+}
+
+#s_reqs {
+	display: none;
+}
+
+#quotes {
+	display: none;
+}
+
+#institution {
+	display: none;
+}

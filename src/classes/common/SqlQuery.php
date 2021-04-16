@@ -30,4 +30,28 @@ class SqlQuery {
 		$query .= 'FROM institutions';
 		return $query . ';';
 	}
+
+	public static function selectAdmins() {
+		$query = 'SELECT * ';
+		$query .= 'FROM administrators';
+		return $query . ';';
+	}
+
+	public static function selectQuotes() {
+		$query = 'SELECT * ';
+		$query .= 'FROM quotes';
+		return $query . ';';
+	}
+
+	public static function selectSupportRequests() {
+		$query = 'SELECT * ';
+		$query .= 'FROM support_requests';
+		return $query . ';';
+	}
+
+	public static function selectRegisterRequests() {
+		$query = 'SELECT * ';
+		$query .= 'FROM register_requests';
+		return $query . ';';
+	}
 }

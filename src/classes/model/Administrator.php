@@ -6,4 +6,5 @@ class Administrator extends User {
 	}
 
 	public function __destruct() {}
+
 }

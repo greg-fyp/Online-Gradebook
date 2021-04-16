@@ -41,72 +41,35 @@ class UserLoginProcessController extends Controller {
 	}
 
 	private function loginAdministrator($db_handle, $validated_input) {
-		$records = [];
-		$retrieved_details;
+		$obj = Creator::createObject('Model');
+		$obj->setDatabaseHandle($db_handle);
 
-		$query = SqlQuery::authenticateAdmin();
-		$params = array(':username' => $validated_input['username']);
-		$result = $db_handle->executeQuery($query, $params);
+		$login_result = $obj->getAdmin(array('username' => $validated_input['username']));
 
-		if ($db_handle->countRows() == 1) {
-			$records = $db_handle->fetch()[0];
-			if ($records['admin_password'] === $validated_input['password']) {
-				$obj = Creator::createObject('Administrator');
-				$obj->setUserId($records['admin_id']);
-				$obj->setUsername($records['admin_username']);
-				$obj->setFullname($records['admin_fullname']);
-				$obj->setPassword($records['admin_password']);
-				$obj->setGender($records['admin_gender']);
-				$obj->setDob($records['admin_dob']);
-				$obj->setBirthPlace($records['admin_birth_place']);
-				$obj->setAddedTimestamp($records['admin_added_timestamp']);
-	
-				$retrieved_details['personal'] = $obj;
-				$retrieved_details['institutions'] = $this->loadInstitutions();
+		if (!$login_result) {
+			return $this->fail();
+		}
 
-				SessionWrapper::setSession('username', $records['admin_username']);
+		if ($login_result->getPassword() === $validated_input['password']) {
+			$details = [];
+			SessionWrapper::setSession('username', $login_result->getUsername());
+			$view = Creator::createObject('AdministratorView');
+			$view->addStylesheet(CSS_PATH . 'view.css');
+			$view->addScript(JS_PATH . 'view.js');
 
-				$view = Creator::createObject('AdministratorView');
-				$view->setDetails($retrieved_details);
-				$view->addStylesheet(CSS_PATH . 'view.css');
-				$view->addScript(JS_PATH . 'view.js');
-				$view->create();
-				return $view->getHtmlOutput();
-			} else {
-				return $this->fail();
-			}
+			$details['personal'] = $login_result;
+			$details['administrators'] = $obj->getAllAdmins();
+			$details['institutions'] = $obj->getAllInstitutions();
+			$details['register_requests'] = $obj->getAllRegisterRequests();
+			$details['support_requests'] = $obj->getAllSupportRequests();
+			$details['quotes'] = $obj->getAllQuotes();
+
+			$view->setDetails($details);
+			$view->create();
+			return $view->getHtmlOutput();
 		} else {
 			return $this->fail();
 		}
-	}
-
-	private function loadInstitutions() {
-		$records = [];
-		$db_handle = Creator::createDatabaseConnection();
-		$query = SqlQuery::selectInstitutions();
-		$params = array();
-		$result = $db_handle->executeQuery($query, $params);
-
-		if ($db_handle->countRows() == 0) {
-			$records = [];
-		} else {
-			$data = $db_handle->fetch();
-			foreach ($data as $item) {
-				$obj = Creator::createObject('Institution');
-				$obj->setId($item['institution_id']);
-				$obj->setName($item['institution_name']);
-				$obj->setPhone($item['institution_phone']);
-				$obj->setEmail($item['institution_email']);
-				$obj->setPassword($item['institution_hashed_password']);
-				$obj->setAddress($item['institution_address']);
-				$obj->setAddedTimestamp($item['institution_added_timestamp']);
-				$obj->setDbName($item['institution_database_name']);
-				$obj->setDbDomain($item['institution_domain']);
-				array_push($records, $obj);
-			}
-		}
-		
-		return $records;
 	}
 
 	private function fail() {
